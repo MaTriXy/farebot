@@ -1,108 +1,104 @@
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha3'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'io.fabric.tools:gradle:1.25.1'
+        classpath 'com.squareup.sqldelight:gradle-plugin:0.6.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.0"
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
-apply plugin: 'checkstyle'
-
-check.dependsOn 'checkstyle'
-
-task checkstyle(type: Checkstyle) {
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-    classpath = files()
+plugins {
+    id 'com.github.ben-manes.versions' version '0.17.0'
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url "https://maven.google.com" }
+        maven { url 'https://maven.fabric.io/public' }
+    }
+}
+
+apply from: 'dependencies.gradle'
+
+subprojects {
+    apply plugin: 'checkstyle'
+
+    afterEvaluate {project ->
+        if (project.name.contains('farebot')) {
+            check.dependsOn 'checkstyle'
+            task checkstyle(type: Checkstyle) {
+                configFile file('config/checkstyle/checkstyle.xml')
+                source 'src'
+                include '**/*.java'
+                exclude '**/gen/**'
+                exclude '**/IOUtils.java'
+                exclude '**/Charsets.java'
+                classpath = files()
+            }
+            checkstyle {
+                ignoreFailures = false
+                toolVersion = "6.17"
+            }
+        }
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion vers.compileSdkVersion
+                buildToolsVersion vers.buildToolsVersion
+
+                defaultConfig {
+                    minSdkVersion vers.minSdkVersion
+                    targetSdkVersion vers.targetSdkVersion
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_7
+                    targetCompatibility JavaVersion.VERSION_1_7
+                }
+
+                lintOptions {
+                    abortOnError true
+                    disable 'InvalidPackage','MissingTranslation'
+                }
+
+                dexOptions {
+                    dexInProcess = true
+                }
+            }
+        }
+    }
+}
+
+dependencyUpdates.resolutionStrategy = {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+
+configurations {
+    ktlint
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.google.android.gms:play-services-maps:8.3.0'
-    compile 'com.crashlytics.android:crashlytics:1.1.13'
-    compile 'commons-io:commons-io:2.4'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile('org.simpleframework:simple-xml:2.7.1') {
-        exclude module: 'stax'
-        exclude module: 'stax-api'
-        exclude module: 'xpp3'
-    }
-    compile fileTree(dir: 'libs', include: '*.jar')
+    ktlint 'com.github.shyiko:ktlint:0.14.0'
 }
 
-def password = null
-
-def askPassword() {
-    return 'security -q find-generic-password -g -l farebot-release'.execute().err.text.split('"')[1]
-}
-
-afterEvaluate {
-    validateReleaseSigning.doFirst {
-        password = askPassword()
-        signingConfig.storePassword = password
-        signingConfig.keyPassword = password
-    }
-}
-
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
-    productFlavors {
-        dev {
-            minSdkVersion 21
-            applicationId "com.codebutler.farebot.dev"
-        }
-        prod {
-            minSdkVersion 15
-        }
-    }
-
-    defaultConfig {
-        targetSdkVersion 23
-    }
-
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-        }
-        release {
-            storeFile file('release.keystore')
-            keyAlias 'ericbutler'
-            storePassword ''
-            keyPassword ''
-        }
-    }
-
-    buildTypes {
-        release {
-            // runProguard true
-            signingConfig signingConfigs.release
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-    }
-
-    lintOptions {
-        abortOnError false
-    }
+task lintKotlin(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "*/src/**/*.kt"
 }

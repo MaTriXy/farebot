@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    api project(':farebot-card')
+
+    implementation libs.supportV4
+
+    compileOnly libs.autoValueAnnotations
+
+    annotationProcessor libs.autoValue
+    annotationProcessor libs.autoValueGson
+}
+
+android { }
