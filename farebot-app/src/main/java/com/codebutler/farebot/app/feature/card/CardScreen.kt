@@ -23,7 +23,7 @@
 package com.codebutler.farebot.app.feature.card
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import com.codebutler.farebot.R
 import com.codebutler.farebot.app.core.activity.ActivityOperations
@@ -48,9 +48,10 @@ import javax.inject.Inject
 class CardScreen(private val rawCard: RawCard<*>) : FareBotScreen<CardScreen.Component, CardScreenView>() {
 
     data class Content(
-            val card: Card,
-            val transitInfo: TransitInfo?,
-            val viewModels: List<TransactionViewModel>)
+        val card: Card,
+        val transitInfo: TransitInfo?,
+        val viewModels: List<TransactionViewModel>
+    )
 
     private var content: Content? = null
 
@@ -138,7 +139,9 @@ class CardScreen(private val rawCard: RawCard<*>) : FareBotScreen<CardScreen.Com
     }
 
     private fun createViewModels(transitInfo: TransitInfo?): List<TransactionViewModel> {
-        val subscriptions = transitInfo?.subscriptions?.map { TransactionViewModel.SubscriptionViewModel(activity, it) } ?: listOf()
+        val subscriptions = transitInfo?.subscriptions?.map {
+            TransactionViewModel.SubscriptionViewModel(activity, it)
+        } ?: listOf()
         val trips = transitInfo?.trips?.map { TransactionViewModel.TripViewModel(activity, it) } ?: listOf()
         val refills = transitInfo?.refills?.map { TransactionViewModel.RefillViewModel(activity, it) } ?: listOf()
         return subscriptions + (trips + refills).sortedByDescending { it.date }

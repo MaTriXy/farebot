@@ -23,8 +23,8 @@
 package com.codebutler.farebot.app.feature.card
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -33,6 +33,7 @@ import com.codebutler.farebot.app.core.kotlin.bindView
 import com.codebutler.farebot.transit.TransitInfo
 import com.jakewharton.rxrelay2.PublishRelay
 import com.wealthfront.magellan.BaseScreenView
+import com.xwray.groupie.GroupAdapter
 import io.reactivex.Observable
 
 class CardScreenView(context: Context) : BaseScreenView<CardScreen>(context) {
@@ -53,11 +54,12 @@ class CardScreenView(context: Context) : BaseScreenView<CardScreen>(context) {
 
     fun setTransitInfo(transitInfo: TransitInfo, viewModels: List<TransactionViewModel>) {
         val balance = transitInfo.getBalanceString(resources)
-        if (balance.isNullOrEmpty()) {
+        if (balance.isEmpty()) {
             setError(resources.getString(R.string.no_information))
         } else {
             balanceTextView.text = balance
             if (viewModels.isNotEmpty()) {
+                recycler.adapter = GroupAdapter<TransactionAdapter.TransactionViewHolder>()
                 recycler.adapter = TransactionAdapter(viewModels, clicksRelay)
             } else {
                 recycler.visibility = View.GONE

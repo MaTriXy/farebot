@@ -24,10 +24,10 @@ package com.codebutler.farebot.app.feature.help
 
 import android.content.Context
 import android.nfc.NfcAdapter
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -161,7 +161,16 @@ class HelpScreenView(context: Context) : BaseScreenView<HelpScreen>(context) {
                         cardType = CardType.MifareClassic,
                         keysRequired = true,
                         extraNoteResId = R.string.easycard_card_note
+                ),
+                SupportedCard(
+                        imageResId = R.drawable.kmt_card,
+                        name = "Kartu Multi Trip",
+                        locationResId = R.string.location_jakarta,
+                        cardType = CardType.FeliCa,
+                        keysRequired = false,
+                        extraNoteResId = R.string.kmt_notes
                 )
+
         )
     }
 
@@ -174,9 +183,10 @@ class HelpScreenView(context: Context) : BaseScreenView<HelpScreen>(context) {
     }
 
     internal class SupportedCardsAdapter(
-            private val context: Context,
-            private val supportedCards: List<SupportedCard>)
-        : RecyclerView.Adapter<SupportedCardViewHolder>() {
+        private val context: Context,
+        private val supportedCards: List<SupportedCard>
+    ) :
+        RecyclerView.Adapter<SupportedCardViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupportedCardViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
@@ -192,12 +202,12 @@ class HelpScreenView(context: Context) : BaseScreenView<HelpScreen>(context) {
 
     internal class SupportedCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val textViewName: TextView by bindView(R.id.card_name)
-        val textViewLocation: TextView by bindView(R.id.card_location)
-        val textViewNote: TextView by bindView(R.id.card_note)
-        val imageView: ImageView by bindView(R.id.card_image)
-        val imageViewSecure: ImageView by bindView(R.id.card_secure)
-        val viewNotSupported: View by bindView(R.id.card_not_supported)
+        private val textViewName: TextView by bindView(R.id.card_name)
+        private val textViewLocation: TextView by bindView(R.id.card_location)
+        private val textViewNote: TextView by bindView(R.id.card_note)
+        private val imageView: ImageView by bindView(R.id.card_image)
+        private val imageViewSecure: ImageView by bindView(R.id.card_secure)
+        private val viewNotSupported: View by bindView(R.id.card_not_supported)
 
         init {
             imageViewSecure.setOnClickListener {
@@ -255,11 +265,12 @@ class HelpScreenView(context: Context) : BaseScreenView<HelpScreen>(context) {
     }
 
     data class SupportedCard(
-            @get:DrawableRes val imageResId: Int,
-            val name: String,
-            @get:StringRes val locationResId: Int,
-            val cardType: CardType,
-            val keysRequired: Boolean = false,
-            val preview: Boolean = false,
-            @get:StringRes val extraNoteResId: Int? = null)
+        @get:DrawableRes val imageResId: Int,
+        val name: String,
+        @get:StringRes val locationResId: Int,
+        val cardType: CardType,
+        val keysRequired: Boolean = false,
+        val preview: Boolean = false,
+        @get:StringRes val extraNoteResId: Int? = null
+    )
 }

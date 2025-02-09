@@ -24,9 +24,9 @@ package com.codebutler.farebot.app.feature.history
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -34,17 +34,18 @@ import com.codebutler.farebot.R
 import com.codebutler.farebot.app.core.activity.ActivityOperations
 import com.codebutler.farebot.app.core.kotlin.bindView
 import com.jakewharton.rxrelay2.PublishRelay
-import com.uber.autodispose.android.ViewScopeProvider
+import com.uber.autodispose.android.scope
 import com.uber.autodispose.kotlin.autoDisposable
 import com.wealthfront.magellan.BaseScreenView
 import io.reactivex.Observable
 
 @SuppressLint("ViewConstructor")
 class HistoryScreenView(
-        context: Context,
-        val activityOperations: ActivityOperations,
-        val listener: Listener)
-    : BaseScreenView<HistoryScreen>(context) {
+    context: Context,
+    val activityOperations: ActivityOperations,
+    val listener: Listener
+) :
+    BaseScreenView<HistoryScreen>(context) {
 
     private val clicksRelay = PublishRelay.create<HistoryViewModel>()
     private val selectionRelay = PublishRelay.create<List<HistoryViewModel>>()
@@ -62,7 +63,7 @@ class HistoryScreenView(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         selectionRelay
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDisposable(scope())
                 .subscribe { items ->
                     if (items.isNotEmpty()) {
                         if (actionMode == null) {

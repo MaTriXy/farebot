@@ -23,22 +23,23 @@
 package com.codebutler.farebot.app.feature.history
 
 import android.annotation.SuppressLint
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.codebutler.farebot.R
-import com.codebutler.farebot.app.core.kotlin.inflate
 import com.codebutler.farebot.app.core.kotlin.bindView
+import com.codebutler.farebot.app.core.kotlin.inflate
 import com.jakewharton.rxrelay2.PublishRelay
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 internal class HistoryAdapter(
-        private val viewModels: List<HistoryViewModel>,
-        private val clicksRelay: PublishRelay<HistoryViewModel>,
-        private val selectionRelay: PublishRelay<List<HistoryViewModel>>)
-    : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+    private val viewModels: List<HistoryViewModel>,
+    private val clicksRelay: PublishRelay<HistoryViewModel>,
+    private val selectionRelay: PublishRelay<List<HistoryViewModel>>
+) :
+    RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder =
             HistoryViewHolder(parent.inflate(R.layout.item_history))
@@ -82,14 +83,14 @@ internal class HistoryAdapter(
     }
 
     internal class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textViewCardName: TextView by bindView(R.id.card_name)
-        val textViewCardSerial: TextView by bindView(R.id.card_serial)
-        val textViewCardTime: TextView by bindView(R.id.card_time)
-        val textViewCardDate: TextView by bindView(R.id.card_date)
+        private val textViewCardName: TextView by bindView(R.id.card_name)
+        private val textViewCardSerial: TextView by bindView(R.id.card_serial)
+        private val textViewCardTime: TextView by bindView(R.id.card_time)
+        private val textViewCardDate: TextView by bindView(R.id.card_date)
 
         @SuppressLint("SetTextI18n")
         fun update(viewModel: HistoryViewModel) {
-            val scannedAt = viewModel.savedCard.scanned_at()
+            val scannedAt = viewModel.savedCard.scannedAt
             val identity = viewModel.transitIdentity
             val savedCard = viewModel.savedCard
 
@@ -100,12 +101,12 @@ internal class HistoryAdapter(
             textViewCardTime.text = timeInstance.format(scannedAt)
 
             if (identity != null) {
-                val serial = identity.serialNumber ?: savedCard.serial()
+                val serial = identity.serialNumber ?: savedCard.serial
                 textViewCardName.text = identity.name
                 textViewCardSerial.text = serial
             } else {
                 textViewCardName.text = itemView.resources.getString(R.string.unknown_card)
-                textViewCardSerial.text = "${savedCard.type()} - ${savedCard.serial()}"
+                textViewCardSerial.text = "${savedCard.type} - ${savedCard.serial}"
             }
 
             itemView.isSelected = viewModel.isSelected

@@ -23,7 +23,7 @@
 package com.codebutler.farebot.card;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.codebutler.farebot.base.ui.FareBotUiTree;
 import com.codebutler.farebot.base.util.ByteArray;
@@ -45,6 +45,7 @@ public abstract class Card {
     public abstract FareBotUiTree getAdvancedUi(Context context);
 
     @NonNull
+    @SuppressWarnings("unchecked")
     public Class<? extends Card> getParentClass() {
         Class<? extends Card> aClass = getClass();
         while (aClass.getSuperclass() != Card.class) {

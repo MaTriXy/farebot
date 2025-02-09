@@ -23,7 +23,7 @@
 
 package com.codebutler.farebot.transit.clipper;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.codebutler.farebot.transit.Station;
 import com.google.common.collect.ImmutableMap;
@@ -91,6 +91,7 @@ final class ClipperData {
             .put(0x0fL, Station.create("Rockridge Station", "Rockridge", "37.84463", "-122.251825"))
             .put(0x11L, Station.create("Lafayette Station", "Lafayette", "37.89318", "-122.1246409"))
             .put(0x12L, Station.create("Walnut Creek Station", "Walnut Creek", "37.90563", "-122.06744"))
+            .put(0x13L, Station.create("Pleasant Hill/Contra Costa Centre Station", "Pleasant Hill", "37.928399", " -122.055992"))
             .put(0x14L, Station.create("Concord Station", "Concord", "37.97376", "-122.02903"))
             .put(0x15L, Station.create("North Concord/Martinez Station", "N. Concord/Martinez", "38.00318", "-122.02463"))
             .put(0x17L, Station.create("Ashby Station", "Ashby", "37.85303", "-122.269965"))
@@ -116,6 +117,7 @@ final class ClipperData {
             .put(0x2bL, Station.create("Millbrae Station", "Millbrae", "37.599935", "-122.386478"))
             .put(0x2cL, Station.create("West Dublin/Pleasanton Station", "W. Dublin/Pleasanton", "37.699764", "-121.928118"))
             .put(0x2dL, Station.create("Oakland Airport Station", "OAK Airport", "37.75256", "-122.19806"))
+            .put(0x2eL, Station.create("Warm Springs/South Fremont Station", "Warm Springs", "37.5018136", "-121.938736"))
             .build();
 
     static final Map<Long, String> GG_FERRY_ROUTES = ImmutableMap.<Long, String>builder()

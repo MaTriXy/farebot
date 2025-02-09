@@ -23,11 +23,14 @@
 package com.codebutler.farebot.transit.orca;
 
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.codebutler.farebot.transit.Station;
 import com.codebutler.farebot.transit.Trip;
 import com.google.auto.value.AutoValue;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import static com.codebutler.farebot.transit.orca.OrcaData.TRANS_TYPE_CANCEL_TRIP;
 
@@ -71,7 +74,8 @@ public abstract class MergedOrcaTrip extends Trip {
                     R.string.transit_orca_fare_cancelled_format,
                     getStartTrip().getFareString(resources));
         }
-        return getStartTrip().getFareString(resources);
+        return NumberFormat.getCurrencyInstance(Locale.US).format(
+                (getStartTrip().getFare() + getEndTrip().getFare()) / 100.0);
     }
 
     @Override

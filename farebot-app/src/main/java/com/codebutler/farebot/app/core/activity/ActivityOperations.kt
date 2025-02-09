@@ -22,8 +22,8 @@
 
 package com.codebutler.farebot.app.core.activity
 
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import android.view.MenuItem
 import io.reactivex.Observable
 
@@ -31,10 +31,11 @@ import io.reactivex.Observable
  * interface for screens to interact with parent activity.
  */
 class ActivityOperations(
-        private val activity: AppCompatActivity,
-        val activityResult: Observable<ActivityResult>,
-        val menuItemClick: Observable<MenuItem>,
-        val permissionResult: Observable<RequestPermissionsResult>) {
+    private val activity: AppCompatActivity,
+    val activityResult: Observable<ActivityResult>,
+    val menuItemClick: Observable<MenuItem>,
+    val permissionResult: Observable<RequestPermissionsResult>
+) {
 
     fun startActionMode(callback: ActionMode.Callback): ActionMode? {
         return activity.startSupportActionMode(callback)

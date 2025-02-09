@@ -23,7 +23,7 @@
 package com.codebutler.farebot.app.feature.card
 
 import android.content.Context
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import com.codebutler.farebot.R
 import com.codebutler.farebot.transit.Refill
 import com.codebutler.farebot.transit.Subscription
@@ -35,7 +35,6 @@ import java.util.Locale
 sealed class TransactionViewModel(val context: Context) {
 
     abstract val date: Date?
-        get
 
     val time: String?
         get() = if (date != null) DateFormat.getTimeInstance(DateFormat.SHORT).format(date) else null
@@ -62,14 +61,15 @@ sealed class TransactionViewModel(val context: Context) {
                 Trip.Mode.TICKET_MACHINE -> R.drawable.ic_transaction_tvm_32dp
                 Trip.Mode.VENDING_MACHINE -> R.drawable.ic_transaction_vend_32dp
                 Trip.Mode.POS -> R.drawable.ic_transaction_pos_32dp
+                Trip.Mode.HANDHELD -> R.drawable.ic_transaction_handheld_32dp
                 Trip.Mode.BANNED -> R.drawable.ic_transaction_banned_32dp
                 Trip.Mode.OTHER -> R.drawable.ic_transaction_unknown_32dp
                 else -> R.drawable.ic_transaction_unknown_32dp
         }
     }
 
-    class RefillViewModel(context: Context, refill: Refill)
-        : TransactionViewModel(context) {
+    class RefillViewModel(context: Context, refill: Refill) :
+        TransactionViewModel(context) {
 
         override val date: Date = Date(refill.timestamp * 1000)
 
@@ -78,8 +78,8 @@ sealed class TransactionViewModel(val context: Context) {
         val amount = "+ ${refill.getAmountString(context.resources)}"
     }
 
-    class SubscriptionViewModel(context: Context, val subscription: Subscription)
-        : TransactionViewModel(context) {
+    class SubscriptionViewModel(context: Context, private val subscription: Subscription) :
+        TransactionViewModel(context) {
 
         override val date = null
 

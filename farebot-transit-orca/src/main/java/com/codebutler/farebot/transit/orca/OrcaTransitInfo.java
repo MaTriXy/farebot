@@ -26,10 +26,9 @@
 package com.codebutler.farebot.transit.orca;
 
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.codebutler.farebot.transit.Refill;
 import com.codebutler.farebot.transit.Subscription;
 import com.codebutler.farebot.transit.TransitInfo;
 import com.google.auto.value.AutoValue;
@@ -47,6 +46,16 @@ public abstract class OrcaTransitInfo extends TransitInfo {
     static final int AGENCY_CT = 0x02;
     static final int AGENCY_WSF = 0x08;
     static final int AGENCY_ET = 0x03;
+    static final int AGENCY_KT = 0x05;
+
+    static final int FTP_TYPE_FERRY = 0x08;
+    static final int FTP_TYPE_SOUNDER = 0x09;
+    static final int FTP_TYPE_CUSTOMER_SERVICE = 0x0B;
+    static final int FTP_TYPE_BUS = 0x80;
+    static final int FTP_TYPE_LINK = 0xFB;
+    static final int FTP_TYPE_HANDHELD = 0xFE;
+    static final int FTP_TYPE_STREETCAR = 0xF9;
+    static final int FTP_TYPE_BRT = 0xFA; //May also apply to future hardwired bus readers
 
     @NonNull
     @Override
@@ -72,11 +81,8 @@ public abstract class OrcaTransitInfo extends TransitInfo {
         return null;
     }
 
-    @Nullable
     @Override
-    public List<Refill> getRefills() {
-        return null;
-    }
+    public boolean hasUnknownStations() { return true; }
 
     abstract int getSerialNumberData();
 
